@@ -10,7 +10,7 @@ var hour = d.getUTCHours();
 
 
 client.on('ready', () => {
-    console.log("Connected as " + client.user.tag);
+    console.log(`Connected as ${client.user.tag}, Victoria version`);
 
     async function main() {
         var result = await request.get("https://covidlive.com.au/vic");
@@ -28,34 +28,33 @@ client.on('ready', () => {
             var change = $(tds[3]).text();
     
             var tableRow = {category, total, change};
-            //console.log(tableRow)
             data.push(tableRow);
-            console.log(data);
-    
-            //data = Object.values(tableRow);          
             
     
         }); 
 
-        client.channels.cache.get("684680921122603008").send({embed: {
-            color: 3447003,
-            title: "Report for Victoria",
-            fields: [
-                { name: `New cases: `, value: `${data[0].change}`},
-                { name: `Active cases: `, value: `${data[1].total}`},
-                { name: `Total cases: `, value: `${data[0].total}`},
-                { name: `Rolling average: `, value: `${average}`},
-                { name: `Last updated: `, value: `${data[8].total}`}
-            ]
-        }});
-        
-
+        console.log(data);     
         console.log(average);
-        setTimeout(main, 1800000);
-    }
 
+        if (hour = 1) {
+            client.channels.cache.get("684680921122603008").send({embed: {
+                color: 3447003,
+                title: "Report for Victoria",
+                fields: [
+                    { name: `New cases: `, value: `${data[0].change}`},
+                    { name: `Active cases: `, value: `${data[1].total}`},
+                    { name: `Total cases: `, value: `${data[0].total}`},
+                    { name: `Rolling average: `, value: `${average}`},
+                    { name: `Last updated: `, value: `${data[8].total}`}
+                ]
+            }});   
+        }
+        
+        data = [];   
+        console.log(data);     
+        setTimeout(main, 1 * 3600 * 1000);
+    }
     main();
 });
-
 
 client.login();
