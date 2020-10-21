@@ -1,56 +1,61 @@
 require('dotenv').config()
 const Discord = require('discord.js');
-const { data } = require('jquery');
+const request = require("request-promise");
+const cheerio = require("cheerio");
+
 const client = new Discord.Client();
 
-var jsdom = require("jsdom");
-const { JSDOM } = jsdom;
-const { window } = new JSDOM();
-const { document } = (new JSDOM('')).window;
-global.document = document;
+var d = new Date();
+var hour = d.getUTCHours();
 
-var $ = jQuery = require('jquery')(window);
 
 client.on('ready', () => {
     console.log("Connected as " + client.user.tag);
 
-});
+    async function main() {
+        var result = await request.get("https://covidlive.com.au/vic");
+        var $ = cheerio.load(result);
+        var data = [];
 
-
-client.on("message", message => {
-    if (message.content == "?cases")
-    {
-        var previousCases = 0;
-        var previousDeaths = 0;
-
-        function getCases() {
-            t = 10*60*1000;
-            var cases = $.ajax({
-                type: "GET",
-                dataType: "json",
-                url: "https://api.covid19api.com/summary",
-                async: false,
-            }).responseJSON;
-
-            //console.log(previousCases);
-            //console.log(cases.Global.TotalConfirmed);
-
-            if (cases.Global.TotalConfirmed != previousCases) {
-                var c_change = cases.Global.TotalConfirmed - previousCases;
-                var d_change = cases.Global.TotalDeaths - previousDeaths;
-
-                client.channels.cache.get('766475023539765249').send(`Confirmed cases: ${cases.Global.TotalConfirmed} (+${c_change}). Total deaths: ${cases.Global.TotalDeaths} (+${d_change})`);
-                //client.channels.cache.get('766475023539765249').send("Confirmed cases: " + cases.Global.TotalConfirmed + ", " + "Deaths: " + cases.Global.TotalDeaths);
-                previousCases = cases.Global.TotalConfirmed;
-                previousDeaths = cases.Global.TotalDeaths;
-            }
-            
-            setTimeout(getCases, t);
-        }
+        var average = $("#content > div > div:nth-child(4) > section > div > div.info-item.info-item-3.COUNT > p").text();          
     
-        getCases();
-    }    
-   
+        $("#content > div > div:nth-child(1) > section > table > tbody > tr").each((index, element) => { 
+            if (index === 0) return true;
+            var tds = $(element).find("td");
+    
+            var category = $(tds[0]).text();
+            var total = $(tds[1]).text();
+            var change = $(tds[3]).text();
+    
+            var tableRow = {category, total, change};
+            //console.log(tableRow)
+            data.push(tableRow);
+            console.log(data);
+    
+            //data = Object.values(tableRow);          
+            
+    
+        }); 
+
+        client.channels.cache.get("684680921122603008").send({embed: {
+            color: 3447003,
+            title: "Report for Victoria",
+            fields: [
+                { name: `New cases: `, value: `${data[0].change}`},
+                { name: `Active cases: `, value: `${data[1].total}`},
+                { name: `Total cases: `, value: `${data[0].total}`},
+                { name: `Rolling average: `, value: `${average}`},
+                { name: `Last updated: `, value: `${data[8].total}`}
+            ]
+        }});
+        
+
+        console.log(average);
+        setTimeout(main, 1800000);
+    }
+
+    main();
 });
+
 
 client.login();
