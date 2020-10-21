@@ -35,9 +35,9 @@ client.on('ready', () => {
 
         console.log(data);     
         console.log(average);
-
-        if (hour = 1) {
-            client.channels.cache.get("684680921122603008").send({embed: {
+        console.log(hour);
+        if (hour === 1) {
+            client.channels.cache.get("766475023539765249").send({embed: {
                 color: 3447003,
                 title: "Report for Victoria",
                 fields: [
@@ -48,6 +48,9 @@ client.on('ready', () => {
                     { name: `Last updated: `, value: `${data[8].total}`}
                 ]
             }});   
+        }
+        else {
+            console.log("Not now");
         }
         
         data = [];   
