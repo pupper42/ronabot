@@ -65,7 +65,7 @@ client.on('ready', () => {
                 color: 3447003,
                 title: "Report for Victoria",
                 fields: [
-                    { name: `New cases: `, value: `${new_cases ? new_cases : case_change}`},
+                    { name: `New cases: `, value: `${(new_cases || new_cases === 0) ? new_cases : case_change}`},
                     { name: `Active cases: `, value: `${active_cases}`},
                     { name: `Total cases: `, value: `${total_cases}`},
                     { name: `Rolling average: `, value: `${average}`},
