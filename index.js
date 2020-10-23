@@ -33,7 +33,7 @@ client.on('ready', () => {
 
         console.log(data);     
 
-        var new_cases;
+        var new_cases = undefined;
         var case_change;
         var active_cases;
         var total_cases;
