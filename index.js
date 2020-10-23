@@ -5,10 +5,6 @@ const cheerio = require("cheerio");
 
 const client = new Discord.Client();
 
-var d = new Date();
-
-
-
 client.on('ready', () => {
     console.log(`Connected as ${client.user.tag}, Victoria version`);
 
@@ -16,6 +12,7 @@ client.on('ready', () => {
         var result = await request.get("https://covidlive.com.au/vic");
         var $ = cheerio.load(result);
         var data = [];
+        var d = new Date();
         var hour = d.getUTCHours();
 
         var average = $("#content > div > div:nth-child(4) > section > div > div.info-item.info-item-3.COUNT > p").text();          
@@ -37,16 +34,36 @@ client.on('ready', () => {
         console.log(data);     
         console.log(average);
         console.log(hour);
-        if (hour === 2) {
+
+        var new_cases;
+        var active_cases;
+        var total_cases;
+
+        for (i = 0; i < data.length; i++) {
+            switch(data[i].category) {
+                case "Cases":
+                    new_cases = data[i].change;
+                    total_cases = data[i].total;
+                    break;
+                case "Active":
+                    active_cases = data[i].total;
+                    break;
+            }
+        }
+
+        console.log(new_cases);
+        console.log(active_cases);
+        console.log(total_cases);
+
+        if (hour === 1) {
             client.channels.cache.get("766475023539765249").send({embed: {
                 color: 3447003,
                 title: "Report for Victoria",
                 fields: [
-                    { name: `New cases: `, value: `${data[0].total}`},
-                    { name: `Active cases: `, value: `${data[2].total}`},
-                    { name: `Total cases: `, value: `${data[1].total}`},
+                    { name: `New cases: `, value: `${new_cases}`},
+                    { name: `Active cases: `, value: `${active_cases}`},
+                    { name: `Total cases: `, value: `${total_cases}`},
                     { name: `Rolling average: `, value: `${average}`},
-                    { name: `Last updated: `, value: `${data[9].total}`}
                 ]
             }});   
         }
