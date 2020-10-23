@@ -32,17 +32,19 @@ client.on('ready', () => {
         }); 
 
         console.log(data);     
-        console.log(average);
-        console.log(hour);
 
         var new_cases;
+        var case_change;
         var active_cases;
         var total_cases;
 
         for (i = 0; i < data.length; i++) {
             switch(data[i].category) {
+                case "New Cases":
+                    new_cases = data[i].total;
+                    break;
                 case "Cases":
-                    new_cases = data[i].change;
+                    case_change = data[i].change;
                     total_cases = data[i].total;
                     break;
                 case "Active":
@@ -51,16 +53,19 @@ client.on('ready', () => {
             }
         }
 
-        console.log(new_cases);
-        console.log(active_cases);
-        console.log(total_cases);
+        console.log(`Hour: ${hour}`);
+        console.log(`New: ${new_cases}`);
+        console.log(`Case change: ${case_change}`)
+        console.log(`Active: ${active_cases}`);
+        console.log(`Total: ${total_cases}`);
+        console.log(`Rolling average: ${average}`);
 
         if (hour === 0) {
             client.channels.cache.get("766475023539765249").send({embed: {
                 color: 3447003,
                 title: "Report for Victoria",
                 fields: [
-                    { name: `New cases: `, value: `${new_cases}`},
+                    { name: `New cases: `, value: `${new_cases ? new_cases : case_change}`},
                     { name: `Active cases: `, value: `${active_cases}`},
                     { name: `Total cases: `, value: `${total_cases}`},
                     { name: `Rolling average: `, value: `${average}`},
