@@ -55,7 +55,7 @@ client.on('ready', () => {
         console.log(active_cases);
         console.log(total_cases);
 
-        if (hour === 1) {
+        if (hour === 0) {
             client.channels.cache.get("766475023539765249").send({embed: {
                 color: 3447003,
                 title: "Report for Victoria",
