@@ -88,7 +88,7 @@ client.on('ready', () => {
         
         data = [];   
         console.log(data);     
-        setTimeout(main, 1000);
+        setTimeout(main, .5 * 3600 * 1000);
     }
     main();
 });
