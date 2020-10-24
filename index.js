@@ -37,6 +37,8 @@ client.on('ready', () => {
         var case_change;
         var active_cases;
         var total_cases;
+        var update;
+        var last_updated;
 
         for (i = 0; i < data.length; i++) {
             switch(data[i].category) {
@@ -50,6 +52,9 @@ client.on('ready', () => {
                 case "Active":
                     active_cases = data[i].total;
                     break;
+                case "Last Updated":
+                    last_updated = data[i].total;
+                    break;
             }
         }
 
@@ -59,8 +64,10 @@ client.on('ready', () => {
         console.log(`Active: ${active_cases}`);
         console.log(`Total: ${total_cases}`);
         console.log(`Rolling average: ${average}`);
+        console.log(`Last updated: ${last_updated}`)
 
-        if (hour === 0) {
+        if (last_updated != update) {
+            update = last_updated;
             client.channels.cache.get("766475023539765249").send({embed: {
                 color: 3447003,
                 title: "Report for Victoria",
@@ -69,16 +76,17 @@ client.on('ready', () => {
                     { name: `Active cases: `, value: `${active_cases}`},
                     { name: `Total cases: `, value: `${total_cases}`},
                     { name: `Rolling average: `, value: `${average}`},
+                    { name: `Last updated: `, value: `${last_updated}`}
                 ]
             }});   
         }
         else {
-            console.log("Not now");
+            console.log("No new updates");
         }
         
         data = [];   
         console.log(data);     
-        setTimeout(main, 1 * 3600 * 1000);
+        setTimeout(main, .5 * 3600 * 1000);
     }
     main();
 });
