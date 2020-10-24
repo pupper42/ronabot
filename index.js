@@ -8,6 +8,13 @@ const client = new Discord.Client();
 client.on('ready', () => {
     console.log(`Connected as ${client.user.tag}, Victoria version`);
 
+    var new_cases;
+    var case_change;
+    var active_cases;
+    var total_cases;
+    var update;
+    var last_updated;
+
     async function main() {
         var result = await request.get("https://covidlive.com.au/vic");
         var $ = cheerio.load(result);
@@ -33,12 +40,6 @@ client.on('ready', () => {
 
         console.log(data);     
 
-        var new_cases = undefined;
-        var case_change;
-        var active_cases;
-        var total_cases;
-        var update;
-        var last_updated;
 
         for (i = 0; i < data.length; i++) {
             switch(data[i].category) {
@@ -60,15 +61,16 @@ client.on('ready', () => {
 
         console.log(`Hour: ${hour}`);
         console.log(`New: ${new_cases}`);
-        console.log(`Case change: ${case_change}`)
+        console.log(`Case change: ${case_change}`);
         console.log(`Active: ${active_cases}`);
         console.log(`Total: ${total_cases}`);
         console.log(`Rolling average: ${average}`);
-        console.log(`Last updated: ${last_updated}`)
+        console.log(`Last updated: ${last_updated}`);
+        console.log(`Check update: ${update}`);
 
         if (last_updated != update) {
             update = last_updated;
-            client.channels.cache.get("766475023539765249").send({embed: {
+            client.channels.cache.get("684680921122603008").send({embed: {
                 color: 3447003,
                 title: "Report for Victoria",
                 fields: [
@@ -86,7 +88,7 @@ client.on('ready', () => {
         
         data = [];   
         console.log(data);     
-        setTimeout(main, .5 * 3600 * 1000);
+        setTimeout(main, 1000);
     }
     main();
 });
