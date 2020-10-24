@@ -70,7 +70,7 @@ client.on('ready', () => {
 
         if (last_updated != update) {
             update = last_updated;
-            client.channels.cache.get("684680921122603008").send({embed: {
+            client.channels.cache.get("766475023539765249").send({embed: {
                 color: 3447003,
                 title: "Report for Victoria",
                 fields: [
